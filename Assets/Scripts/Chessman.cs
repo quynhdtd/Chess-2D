@@ -78,9 +78,11 @@ public class Chessman : MonoBehaviour
 
     private void OnMouseUp()
     {
-        DestroyMovePlates();
+        if (!controller.GetComponent<Game>().IsGameOver() && controller.GetComponent<Game>().GetCurrentPlayer() == player) {
+            DestroyMovePlates();
 
-        InitiateMovePlates();
+            InitiateMovePlates();
+        }
     }
 
     public void DestroyMovePlates()
@@ -133,17 +135,11 @@ public class Chessman : MonoBehaviour
                 break;
 
             case "black_pawn":
-                if (yBoard == 6){
-                    PawnMovePlate(xBoard, yBoard - 2);
-                }
-                PawnMovePlate(xBoard, yBoard -1);
+                PawnMovePlate(xBoard, yBoard - 1);
                 break;
 
             case "white_pawn":
-                if (yBoard == 1){
-                    PawnMovePlate(xBoard, yBoard + 2);
-                }
-                PawnMovePlate(xBoard, yBoard +1);
+                PawnMovePlate(xBoard, yBoard + 1);
                 break;
         }
     }
@@ -213,9 +209,18 @@ public class Chessman : MonoBehaviour
         Game sc = controller.GetComponent<Game>();
         if (sc.PositionOnBoard(x, y))
         {
+            
             if (sc.GetPosition(x, y) == null)
             {
                 MovePlateSpawn(x, y);
+            }
+
+            if (sc.GetPosition(x, y + 1) == null && yBoard == 1 && player == "white"){
+                    MovePlateSpawn(x, y + 1);
+                }
+
+            if (sc.GetPosition(x, y - 1) == null && yBoard == 6 && player == "black"){
+                MovePlateSpawn(x, y - 1);
             }
 
             if (sc.PositionOnBoard(x + 1, y) && sc.GetPosition(x + 1, y) != null && sc.GetPosition(x + 1, y).GetComponent<Chessman>().player != player)
